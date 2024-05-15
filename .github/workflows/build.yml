@@ -1,42 +1,5 @@
-name: Android Build
-
-on:
-  push:
-    branches: [main]
-
-jobs:
-  build:
-    runs-on: ubuntu-20.04
-
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-
-    - name: Set Date
-      id: set-date
-      run: echo "::set-output name=date::$(date -u +%Y%m%d)"
-
-    - name: Cache Buildozer global directory
-      uses: actions/cache@v2
-      with:
-        path: .buildozer_global
-        key: buildozer-global-${{ hashFiles('buildozer.spec') }}
-
-    - name: Cache Buildozer local directory
-      uses: actions/cache@v2
-      with:
-        path: .buildozer
-        key: ${{ runner.os }}-${{ steps.set-date.outputs.date }}-${{ hashFiles('buildozer.spec') }}
-
-    - name: Build with Buildozer
-      uses: sameerskh/sameerkhen00@v1
-      id: buildozer
-      with:
-        command: buildozer android debug
-        buildozer_version: stable
-
-    - name: Upload APK artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: package
-        path: ${{ steps.buildozer.outputs.filename }}
+- name: Build with Buildozer
+  uses: sameerskh/buildozer-action@v1
+  id: buildozer
+  with:
+    command: buildozer android debug
